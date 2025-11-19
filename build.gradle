@@ -98,7 +98,7 @@ repositories {
 
 dependencies {
     implementation "net.neoforged:neoforge:${neo_version}"
-    implementation "com.github.standobyte.jojo_ripples:RipplesOfThePast-NeoForge-1.21.1:1.21.1-0.4-251119-b"
+    implementation "com.github.standobyte.jojo_ripples:RipplesOfThePast-NeoForge-1.21.1:${ripples_version}"
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
