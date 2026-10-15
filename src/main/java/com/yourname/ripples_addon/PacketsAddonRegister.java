@@ -1,17 +1,16 @@
 package com.yourname.ripples_addon;
 
-import com.github.standobyte.jojo.core.PacketsRegister.PacketCodecHandler;
-import com.github.standobyte.jojo.core.PacketsRegister.PacketOGHandler;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.handling.IPayloadHandler;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 /**
  * Register custom packets here.
- * You can see examples in {@link com.github.standobyte.jojo.core.PacketsRegister} from the base mod.
+ * You can see examples in {@link com.github.standobyte.jojo.PacketsRegister} from the base mod.
  */
 public class PacketsAddonRegister {
     public static void register(RegisterPayloadHandlersEvent event) {
@@ -24,6 +23,20 @@ public class PacketsAddonRegister {
 
         // Client packets:
         // registerPacket(registrar, PayloadRegistrar::playToClient, new DatapackStandsPacket.Handler(JojoMod.resLoc("datastands")));
+    }
+
+    public static interface PacketHandler<T extends CustomPacketPayload> {
+        CustomPacketPayload.Type<T> type();
+        void handle(T payload, IPayloadContext context);
+    }
+
+    public static interface PacketOGHandler<T extends CustomPacketPayload> extends PacketsAddonRegister.PacketHandler<T> {
+        void encode(T packet, RegistryFriendlyByteBuf buf);
+        T decode(RegistryFriendlyByteBuf buf);
+    }
+
+    public static interface PacketCodecHandler<T extends CustomPacketPayload> extends PacketsAddonRegister.PacketHandler<T> {
+        StreamCodec<? super RegistryFriendlyByteBuf, T> reader();
     }
 
     private static <T extends CustomPacketPayload> void registerPacket(PayloadRegistrar registrar, PacketType packetType, PacketOGHandler<T> handler) {
